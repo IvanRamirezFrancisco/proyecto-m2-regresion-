@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Predicción de grasa corporal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <main class="page">
+        <section class="card">
+            <div class="header">
+                <h1>Predicción de porcentaje de grasa corporal</h1>
+                <p>
+                    Esta aplicación utiliza un modelo de regresión entrenado con el dataset
+                    <strong>Body Performance Data</strong> para estimar el porcentaje de grasa corporal
+                    a partir de características físicas y pruebas de rendimiento.
+                </p>
+            </div>
+
+            <form method="POST" class="form">
+                <div class="grid">
+
+                    <div class="field">
+                        <label for="age">Edad</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            min="10"
+                            max="100"
+                            name="age"
+                            id="age"
+                            value="{{ valores.age }}"
+                            placeholder="Ej. 25"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="gender">Género</label>
+                        <select name="gender" id="gender" required>
+                            <option value="">Selecciona una opción</option>
+                            <option value="M" {% if valores.gender == "M" %}selected{% endif %}>Masculino</option>
+                            <option value="F" {% if valores.gender == "F" %}selected{% endif %}>Femenino</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="height_cm">Altura en centímetros</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            min="100"
+                            max="230"
+                            name="height_cm"
+                            id="height_cm"
+                            value="{{ valores.height_cm }}"
+                            placeholder="Ej. 175"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="weight_kg">Peso en kilogramos</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            min="20"
+                            max="250"
+                            name="weight_kg"
+                            id="weight_kg"
+                            value="{{ valores.weight_kg }}"
+                            placeholder="Ej. 75"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="diastolic">Presión diastólica</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            min="40"
+                            max="140"
+                            name="diastolic"
+                            id="diastolic"
+                            value="{{ valores.diastolic }}"
+                            placeholder="Ej. 80"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="systolic">Presión sistólica</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            min="70"
+                            max="240"
+                            name="systolic"
+                            id="systolic"
+                            value="{{ valores.systolic }}"
+                            placeholder="Ej. 120"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="gripForce">Fuerza de agarre</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            min="0"
+                            max="100"
+                            name="gripForce"
+                            id="gripForce"
+                            value="{{ valores.gripForce }}"
+                            placeholder="Ej. 45"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="sit_and_bend_forward_cm">Flexión hacia adelante en cm</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            min="-30"
+                            max="100"
+                            name="sit_and_bend_forward_cm"
+                            id="sit_and_bend_forward_cm"
+                            value="{{ valores.sit_and_bend_forward_cm }}"
+                            placeholder="Ej. 15"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="sit_ups_counts">Cantidad de abdominales</label>
+                        <input
+                            type="number"
+                            step="1"
+                            min="0"
+                            max="100"
+                            name="sit_ups_counts"
+                            id="sit_ups_counts"
+                            value="{{ valores.sit_ups_counts }}"
+                            placeholder="Ej. 40"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="broad_jump_cm">Salto largo en cm</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            min="0"
+                            max="350"
+                            name="broad_jump_cm"
+                            id="broad_jump_cm"
+                            value="{{ valores.broad_jump_cm }}"
+                            placeholder="Ej. 210"
+                            required
+                        >
+                    </div>
+
+                    <div class="field full">
+                        <label for="class">Clase de rendimiento corporal</label>
+                        <select name="class" id="class" required>
+                            <option value="">Selecciona una opción</option>
+                            <option value="A" {% if valores.class == "A" %}selected{% endif %}>A - Rendimiento alto</option>
+                            <option value="B" {% if valores.class == "B" %}selected{% endif %}>B - Rendimiento bueno</option>
+                            <option value="C" {% if valores.class == "C" %}selected{% endif %}>C - Rendimiento medio</option>
+                            <option value="D" {% if valores.class == "D" %}selected{% endif %}>D - Rendimiento bajo</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <button type="submit">Realizar predicción</button>
+            </form>
+
+            {% if resultado is not none %}
+                <div class="result">
+                    <h2>Resultado de la predicción</h2>
+                    <p>Porcentaje estimado de grasa corporal:</p>
+                    <strong>{{ resultado }}%</strong>
+                </div>
+            {% endif %}
+
+            {% if error %}
+                <div class="error">
+                    <h2>Error en los datos ingresados</h2>
+                    <p>{{ error }}</p>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>
